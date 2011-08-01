@@ -1,4 +1,4 @@
-Tasks = {connectors={}, columns=9, iconSize=32, slotcounter=0, activeSlots={}}
+Tasks = {connectors={}, columns=9, iconSize=32, slotcounter=0, activeSlots={}, helper=nil}
 
 Tasks.currentTask = nil
 
@@ -70,6 +70,16 @@ end
 
 function Tasks.StopButtonClicked(args)
 	emberServices:getServerService():useStop()
+	return true
+end
+
+function Tasks.ParameterApplyButtonClicked(args)
+	print("1")
+	for entityId,activeSlot in pairs(Tasks.activeSlots) do
+	Tasks.helper:getList(entityId)
+        print("Attaching entity with id " .. entityId)
+	end
+	Tasks.helper:sendList(emberOgre:getAvatar())
 	return true
 end
 
@@ -180,6 +190,8 @@ function Tasks.buildWidget()
 
 	Tasks.widget:getWindow("StopButton"):subscribeEvent("Clicked", "Tasks.StopButtonClicked")
 	Tasks.widget:getWindow("ExpandParametersButton"):subscribeEvent("Clicked", "Tasks.ExpandParametersButtonClicked")
+	Tasks.widget:getWindow("ApplyButton"):subscribeEvent("Clicked", "Tasks.ParameterApplyButtonClicked")
+
 
 
 	--Set up listeners so that when something is moved in the world it can be dropped on the inventory
@@ -187,6 +199,10 @@ function Tasks.buildWidget()
 
 --	createConnector(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
 
+
+	print ("3")
+	Tasks.helper = Ember.OgreView.Gui.TasksList:new_local()
+	print("2")
 
 	Tasks.widget:registerConsoleVisibilityToggleCommand("tasks")
 	Tasks.widget:enableCloseButton()
